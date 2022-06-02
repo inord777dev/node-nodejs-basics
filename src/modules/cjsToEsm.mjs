@@ -11,7 +11,7 @@ const __file = fileURLToPath(import.meta.url);
 export let unknownObject;
 
 
-readFile(path.join(path.dirname(__file), random > 0.5 ? 'files/a.json' : 'files/b.json')).then((res) => {
+readFile(path.join(path.dirname(__file), 'files', random > 0.5 ? 'a.json' : 'b.json')).then((res) => {
   unknownObject = JSON.parse(res);
 });
 
