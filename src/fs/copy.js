@@ -27,16 +27,16 @@ export const copy = async () => {
     throw new Error('FS operation failed');
   }
 
-  await mkdir(desc);
-
   try {
+    await mkdir(desc);
     const files = await readdir(src, { withFileTypes: true });
-    for (const file of files) 
+    for (const file of files) {
       await copyFile(path.join(src, file.name), path.join(desc, file.name));
+    }
+    console.log('Performed successfully');
   } catch (err) {
     console.error(err);
   }
-
 };
 
 copy();

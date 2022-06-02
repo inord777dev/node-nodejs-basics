@@ -1,7 +1,7 @@
 import path from 'path';
 import { constants } from 'fs';
 import { fileURLToPath } from 'url';
-import { access, readdir, copyFile, mkdir } from 'fs/promises';
+import { access, readdir } from 'fs/promises';
 
 const exists = async (dir) => {
   let result = false;
@@ -24,8 +24,9 @@ export const list = async () => {
 
   try {
     const files = await readdir(src, { withFileTypes: true });
-    for (const file of files) 
+    for (const file of files) {
       console.log(file.name);
+    }
   } catch (err) {
     console.error(err);
   }
