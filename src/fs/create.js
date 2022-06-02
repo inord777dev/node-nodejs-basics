@@ -23,7 +23,7 @@ export const create = async () => {
   }
 
   try {
-    appendFile(file, 'I am fresh and young');
+    await appendFile(file, 'I am fresh and young');
     console.log('Performed successfully');
   }
   catch(err) {
