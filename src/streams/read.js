@@ -22,8 +22,7 @@ export const read = async () => {
     throw new Error('FS operation failed');
   }
 
-  const rs = createReadStream(file);
-  rs.on('open', () => { rs.pipe(process.stdout); });
+  const rs = createReadStream(file).pipe(process.stdout);
 };
 
 read();
