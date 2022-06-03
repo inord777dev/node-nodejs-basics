@@ -5,7 +5,6 @@ export const transformStream = async () => {
     transform(chunk, encoding, callback) {
       this.push(chunk.toString().trim().split('').reverse().join('') + '\n');
       callback();
-      [].slice
     }
   });
 
