@@ -1,9 +1,10 @@
 import { Transform } from 'stream';
+import { EOL } from 'os';
 
 export const transformStream = async () => {
   const transStream = new Transform({
     transform(chunk, encoding, callback) {
-      this.push(chunk.toString().trim().split('').reverse().join('') + '\n');
+      this.push(chunk.toString().trim().split('').reverse().join('') + EOL);
       callback();
     }
   });
