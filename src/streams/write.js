@@ -22,7 +22,7 @@ export const write = async () => {
     throw new Error('FS operation failed');
   }
 
-  console.log('Type text, press Ctrl + C for terminate:');
+  console.log('Type text, press Ctrl + C to terminate:');
 
   const ws = createWriteStream(file);
   process.stdin.pipe(ws).on('end', () => process.exit());
