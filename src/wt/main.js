@@ -1,5 +1,5 @@
 import { cpus } from 'os';
-import { Worker, parentPort } from 'worker_threads';
+import { Worker } from 'worker_threads';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -19,7 +19,7 @@ export const performCalculations = async () => {
 
   process.on('beforeExit', ()=> {
     console.dir(result);
-  } )
+  });
 };
 
 performCalculations();
