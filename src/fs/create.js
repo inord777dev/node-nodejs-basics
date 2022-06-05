@@ -3,25 +3,32 @@ import path from 'path';
 import { constants } from 'fs';
 import { fileURLToPath } from 'url';
 
-export const create = async () => {
-  const wd = path.dirname(fileURLToPath(import.meta.url));
-  const file = path.join(wd, 'files', 'fresh.txt');
-  let fileExists = false;
-
+const exists = async (dir) => {
+  let result = false;
   try {
-    await access(file, constants.F_OK);
-    fileExists = true;
+    await access(dir, constants.F_OK);
+    result = true;
   }
   catch {
   }
+  return result;
+}
 
-  if (fileExists) {
+export const create = async () => {
+  const wd = path.dirname(fileURLToPath(import.meta.url));
+  const file = path.join(wd, 'files', 'fresh.txt');
+
+  if (await exists(file)) {
     throw new Error('FS operation failed');
   }
 
-  appendFile(file, 'I am fresh and young');
-  console.log('File created successfully');
-
+  try {
+    await appendFile(file, 'I am fresh and young');
+    console.log('Performed successfully');
+  }
+  catch(err) {
+    console.error(err);
+  }
 };
 
 create();
