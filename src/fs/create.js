@@ -1,34 +1,16 @@
-import { access, appendFile } from 'fs/promises';
 import path from 'path';
-import { constants } from 'fs';
-import { fileURLToPath } from 'url';
+import { appendFile } from 'fs/promises';
 
-const exists = async (dir) => {
-  let result = false;
-  try {
-    await access(dir, constants.F_OK);
-    result = true;
-  }
-  catch {
-  }
-  return result;
-}
+import { isExist, getCurrentExecInfo } from '../helper/helper.fs'
+import { OPERATION_FAILED } from '../helper/helper.msg'
 
-export const create = async () => {
-  const wd = path.dirname(fileURLToPath(import.meta.url));
-  const file = path.join(wd, 'files', 'fresh.txt');
+export const create = async (filename, text) => {
+  const { dirname } = getCurrentExecInfo(import.meta);
+  const filename = path.join(dirname, filename);
 
-  if (await exists(file)) {
-    throw new Error('FS operation failed');
+  if (await isExist(filename)) {
+    throw new Error(OPERATION_FAILED);
   }
 
-  try {
-    await appendFile(file, 'I am fresh and young');
-    console.log('Performed successfully');
-  }
-  catch(err) {
-    console.error(err);
-  }
+  await appendFile(filename, text);
 };
-
-create();
