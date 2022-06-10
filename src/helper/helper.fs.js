@@ -2,26 +2,25 @@ import { access } from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { constants } from 'fs';
-
 export const getCurrentExecInfo = (importMeta) => {
   const filename = fileURLToPath(importMeta.url);
   const dirname = path.dirname(__filename);
 
   return {
     dirname,
-    filename
+    filename,
   };
-}; 
+};
 
 export const isExist = async (path) => {
   let result = false;
   try {
-    await access(path, constants.F_OK);
+    await access(path);
     result = true;
-  }
-  catch {
-  }
+  } catch {}
   return result;
-}
+};
 
+export const fullPath = (dir, segment) => {
+  return path.isAbsolute(segment) ? segment : path.join(dir, segment);
+};

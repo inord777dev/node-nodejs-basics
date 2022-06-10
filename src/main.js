@@ -1,8 +1,17 @@
 import process from 'process';
 import os from 'os';
 import readline from 'readline';
+import { fullPath } from './helper/helper.fs.js';
 import { OPERATION_FAILED, INVALID_INPUT } from './helper/helper.msg.js';
 import { list } from './fs/list.js';
+import { cd } from './fs/cd.js';
+import { up } from './fs/up.js';
+import { read } from './fs/read.js';
+import { create } from './fs/create.js';
+import { rn } from './fs/rename.js';
+import { copy } from './fs/copy.js';
+import { move } from './fs/move.js';
+import { remove } from './fs/delete.js';
 
 const main = async (args) => {
   const ARG_USERNAME = 'USERNAME';
@@ -15,9 +24,9 @@ const main = async (args) => {
   let userName = ANONYMOUS;
 
   if (userNameIndex > -1) {
-    const argValues = args[userNameIndex].spite('=');
+    const argValues = args[userNameIndex].split('=');
     if (argValues.length === 2) {
-      userName = argValues[2].trim();
+      userName = argValues[1].trim();
     }
   }
 
@@ -44,15 +53,73 @@ const main = async (args) => {
 
   const exec = async (matches) => {
     const command = matches[0];
+    const params = matches.slice(1);
     try {
-      if (command === 'ls') {
-        if (matches.length > 1) {
+      if (command === 'up') {
+        if (params.length !== 0) {
+          console.log(INVALID_INPUT);
+          return;
+        }
+        currentDir = await up(currentDir);
+      } else if (command === 'cd') {
+        if (params.length !== 1) {
+          console.log(INVALID_INPUT);
+          return;
+        }
+        currentDir = await cd(fullPath(currentDir, params[0]));
+      } else if (command === 'ls') {
+        if (params.length !== 0) {
           console.log(INVALID_INPUT);
           return;
         }
         await list(currentDir);
+      } else if (command === 'cat') {
+        if (params.length !== 1) {
+          console.log(INVALID_INPUT);
+          return;
+        }
+        await read(fullPath(currentDir, params[0]));
+      } else if (command === 'add') {
+        if (params.length !== 1) {
+          console.log(INVALID_INPUT);
+          return;
+        }
+        await create(fullPath(currentDir, params[0]));
+      } else if (command === 'rn') {
+        if (params.length !== 2) {
+          console.log(INVALID_INPUT);
+          return;
+        }
+        await rn(
+          fullPath(currentDir, params[0]),
+          fullPath(currentDir, params[1])
+        );
+      } else if (command === 'cp') {
+        if (params.length !== 2) {
+          console.log(INVALID_INPUT);
+          return;
+        }
+        await copy(
+          fullPath(currentDir, params[0]),
+          fullPath(currentDir, params[1])
+        );
+      } else if (command === 'mv') {
+        if (params.length !== 2) {
+          console.log(INVALID_INPUT);
+          return;
+        }
+        await move(
+          fullPath(currentDir, params[0]),
+          fullPath(currentDir, params[1])
+        );
+      } else if (command === 'rm') {
+        if (params.length !== 1) {
+          console.log(INVALID_INPUT);
+          return;
+        }
+        await remove(fullPath(currentDir, params[0]));
       } else if (command === 'exit' || command === '.exit') {
-        if (matches.length > 1) {
+        if (params.length !== 0) {
           console.log(INVALID_INPUT);
           return;
         }
@@ -68,7 +135,7 @@ const main = async (args) => {
   prompt();
 
   rl.on('line', async (input) => {
-    const matches = input.match(/\w+/g);
+    const matches = input.match(/[^\s]+/g);
     if (matches.length) {
       await exec(matches);
     }

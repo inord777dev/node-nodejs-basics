@@ -1,33 +1,10 @@
-import path from 'path';
-import { constants } from 'fs';
-import { fileURLToPath } from 'url';
-import { access, readFile } from 'fs/promises';
+import { readFile } from 'fs/promises';
+import { isExist } from '../helper/helper.fs.js';
+import { OPERATION_FAILED } from '../helper/helper.msg.js';
 
-const exists = async (dir) => {
-  let result = false;
-  try {
-    await access(dir, constants.F_OK);
-    result = true;
+export const read = async (file) => {
+  if (!(await isExist(file))) {
+    throw new Error(OPERATION_FAILED);
   }
-  catch {
-  }
-  return result;
-}
-
-export const read = async () => {
-  const wd = path.dirname(fileURLToPath(import.meta.url));
-  const file = path.join(wd, 'files', 'fileToRead.txt');
-
-  if (! await exists(file)) {
-    throw new Error('FS operation failed');
-  }
-
-  try {
-    console.log(await readFile(file, { encoding: 'utf8' }));
-  }
-  catch(err) {
-    console.error(err);
-  }
+  console.log(await readFile(file, { encoding: 'utf8' }));
 };
-
-read();
