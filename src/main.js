@@ -14,6 +14,7 @@ import { move } from './fs/move.js';
 import { remove } from './fs/delete.js';
 import { calculateHash } from './hash/calcHash.js';
 import { compress, decompress } from './helper/helper.zip.js';
+import about from './helper/helper.os.js';
 
 const main = async (args) => {
   const ARG_USERNAME = 'USERNAME';
@@ -144,6 +145,33 @@ const main = async (args) => {
           fullPath(currentDir, params[0]),
           fullPath(currentDir, params[1])
         );
+      } else if (command === 'os') {
+        if (params.length !== 1) {
+          console.log(INVALID_INPUT);
+          return;
+        }
+        const param = params[0].toUpperCase();
+        if (param === '--eol'.toLocaleUpperCase()) {
+          about.eol();
+          return;
+        }
+        if (param === '--cpus'.toLocaleUpperCase()) {
+          about.cpus();
+          return;
+        }
+        if (param === '--homedir'.toLocaleUpperCase()) {
+          about.homedir();
+          return;
+        }
+        if (param === '--username'.toLocaleUpperCase()) {
+          about.username();
+          return;
+        }
+        if (param === '--arh'.toLocaleUpperCase()) {
+          about.arh();
+          return;
+        }
+        console.log(INVALID_INPUT);
       } else if (command === 'exit' || command === '.exit') {
         if (params.length !== 0) {
           console.log(INVALID_INPUT);
