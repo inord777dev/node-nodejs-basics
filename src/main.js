@@ -13,6 +13,7 @@ import { copy } from './fs/copy.js';
 import { move } from './fs/move.js';
 import { remove } from './fs/delete.js';
 import { calculateHash } from './hash/calcHash.js';
+import { compress, decompress } from './helper/helper.zip.js';
 
 const main = async (args) => {
   const ARG_USERNAME = 'USERNAME';
@@ -125,6 +126,24 @@ const main = async (args) => {
           return;
         }
         await calculateHash(fullPath(currentDir, params[0]));
+      } else if (command === 'compress') {
+        if (params.length !== 2) {
+          console.log(INVALID_INPUT);
+          return;
+        }
+        await compress(
+          fullPath(currentDir, params[0]),
+          fullPath(currentDir, params[1])
+        );
+      } else if (command === 'decompress') {
+        if (params.length !== 2) {
+          console.log(INVALID_INPUT);
+          return;
+        }
+        await decompress(
+          fullPath(currentDir, params[0]),
+          fullPath(currentDir, params[1])
+        );
       } else if (command === 'exit' || command === '.exit') {
         if (params.length !== 0) {
           console.log(INVALID_INPUT);
