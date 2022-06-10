@@ -1,39 +1,19 @@
-import { access } from 'fs/promises';
-import path from 'path';
-import { constants, createReadStream } from 'fs';
-import { fileURLToPath } from 'url';
+import { createReadStream } from 'fs';
 import { createHash } from 'crypto';
+import { isExist } from '../helper/helper.fs.js';
+import { OPERATION_FAILED } from '../helper/helper.msg.js';
 
-const hash = createHash('sha256');
-
-const exists = async (dir) => {
-  let result = false;
-  try {
-    await access(dir, constants.F_OK);
-    result = true;
+export const calculateHash = async (file) => {
+  if (!(await isExist(file))) {
+    throw new Error(OPERATION_FAILED);
   }
-  catch {
-  }
-  return result;
-}
+  const hash = createHash('sha256');
+  const readStream = createReadStream(file);
 
-export const calculateHash = async () => {
-  const wd = path.dirname(fileURLToPath(import.meta.url));
-  const file = path.join(wd, 'files', 'fileToCalculateHashFor.txt');
-
-  if (! await exists(file)) {
-    throw new Error('FS operation failed');
+  const chunks = [];
+  for await (const chunk of readStream) {
+    hash.update(chunk);
   }
 
-  const input = createReadStream(file);
-  input.on('readable', () => {
-    const data = input.read();
-    if (data)
-      hash.update(data);
-    else {
-      console.log(hash.digest('hex'));
-    }
-  });
+  console.log(hash.digest('hex'));
 };
-
-calculateHash();

@@ -12,6 +12,7 @@ import { rn } from './fs/rename.js';
 import { copy } from './fs/copy.js';
 import { move } from './fs/move.js';
 import { remove } from './fs/delete.js';
+import { calculateHash } from './hash/calcHash.js';
 
 const main = async (args) => {
   const ARG_USERNAME = 'USERNAME';
@@ -118,6 +119,12 @@ const main = async (args) => {
           return;
         }
         await remove(fullPath(currentDir, params[0]));
+      } else if (command === 'hash') {
+        if (params.length !== 1) {
+          console.log(INVALID_INPUT);
+          return;
+        }
+        await calculateHash(fullPath(currentDir, params[0]));
       } else if (command === 'exit' || command === '.exit') {
         if (params.length !== 0) {
           console.log(INVALID_INPUT);
